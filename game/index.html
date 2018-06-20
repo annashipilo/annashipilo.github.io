@@ -6,12 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <!-- <link rel="stylesheet" href="/resources/demos/style.css"> -->
   <link rel="stylesheet" href="style/style.css">
   <title>Document</title>
 </head>
 
 <body>
+  <div class="cover_form"></div>
+  <div class="userName" id="userName">
+    <form id="startGameForm">
+      <p>Enter your name:</p>
+      <input id="userNameInput" type="text" autofocus required>
+      <button id="play_btn">Play</button>
+    </form>
+  </div>
 
   <canvas id="canvas"></canvas>
 
@@ -24,7 +31,15 @@
     <button id ="checkMathBtn">ANSWER</button>
   </div>
 
-
+  <div class="score">
+    <table id="scoreTable">
+      <thead>
+        <td>Name</td>
+        <td>Score</td>
+      </thead>
+    </table>
+    <button id="restartGame">Restart</button>
+  </div>
 
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>

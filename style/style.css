@@ -64,6 +64,10 @@ section, .game_logo{
   padding: 40px 0;
 }
 
+.game_logo{
+  text-transform: uppercase;
+}
+
 footer{
   background-color: #000;
   color: #fff;
@@ -111,3 +115,14 @@ footer{
   color: #ff9a00;
 }
 
+.screens_img{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.screens_img img{
+  height: 300px;
+  width: 40%;
+  margin: 10px;
+}

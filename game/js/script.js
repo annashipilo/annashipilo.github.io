@@ -24,7 +24,6 @@ var xhr1 = new XMLHttpRequest();
 xhr1.open('GET', 'json/country.json', true);
 xhr1.send();
 xhr1.onreadystatechange = function () {
-  console.log('json');
   if (xhr1.readyState != 4) return;
 
   if (xhr1.status != 200) {
@@ -39,6 +38,8 @@ let enemyName;
 let enemyName1 = ["ужасная", "злобная", "яростная", "злая", "грозная", "сердитая"];
 let enemyName2 = ["Ведьма", "Колдунья", "Злюка"];
 let enemyName3 = ["Лиза", "Даша", "Лара", "Вика", "Соня"];
+
+let heroName;
 
 
 var hpUser = 100;
@@ -64,14 +65,23 @@ function defineEnemyName(i, j, k) {
 }
 
 defineEnemyName(randomInt(0, enemyName1.length - 1), randomInt(0, enemyName2.length - 1), randomInt(0, enemyName3.length - 1));
-console.log(enemyName);
+
+let game = document.querySelector('#startGameForm');
+game.addEventListener('submit', starGame);
+
+function starGame(e){
+  e.preventDefault();
+  let input = document.querySelector('#userNameInput');
+  heroName = input.value;
+  this.style.display = 'none';
+  let divCover = document.querySelector('.cover_form');
+  divCover.style.display = "none";
+}
 
 var lastTime;
 function main() {
   var now = Date.now();
   var dt = (now - lastTime) / 1000.0;
-
-  // update(dt);
   render();
 
   lastTime = now;
@@ -86,6 +96,10 @@ var ptrn;
 var enemyHealth = getEnemyHealth(0);
 var heroHealth = getHeroHealth(0);
 
+if (!localStorage.getItem('results')) {
+  localStorage.setItem('results', '[]');
+}
+
 function getEnemyHealth(i) {
   return {
     pos: [canvas.width - 250, 50],
@@ -99,15 +113,6 @@ function getHeroHealth(i) {
     sprite: new Sprite('img/Gradient_Health_Bar.png', [i * 205, 0], [205, 50])
   }
 }
-
-// enemy = createEnemy(randomInt(1, 3));
-
-// function createEnemy(i){
-//   return{
-//     pos: [canvas.width - 200, canvas.height / 2],
-//     sprite: new Sprite('img/enemy_'+i+'.png', [0, 0], [150, 160])
-//   }
-// }
 
 function animateHero(i, j) {
   return {
@@ -164,32 +169,18 @@ enemyAppear(enemy_x);
 
 
 function init() {
-
   ptrn = ctx.createPattern(resources.get('img/back2.png'), 'no-repeat');
-
-  // document.getElementById('play-again').addEventListener('click', function() {
-  //     reset();
-  // });
-
-  // reset();
   lastTime = Date.now();
   main();
 }
 
 function render() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // ctx.fillStyle = 'blue';
-
-
-
-  // hero = resources.get('img/dino-hero/png/Idle (1).png');
-  // ctx.drawImage(hero, 100, canvas.height / 2, 200, 150);
   ctx.font = "25px Arial";
   ctx.fillStyle = 'red';
-  ctx.fillText(enemyName, canvas.width-275, 45);
+  ctx.fillText(enemyName, canvas.width-300, 45);
   ctx.fillText('Round ' + round, canvas.width / 2 - 25, 50);
-  ctx.fillText('Hero name', 75, 45);
+  ctx.fillText(heroName, 75, 45);
   ctx.fillStyle = ptrn;
 
   renderEntity(player);
@@ -197,8 +188,6 @@ function render() {
   renderEntity(heroHealth);
   renderEntity(enemyHealth);
 
-  // enemy = resources.get('img/enemy_1_sprite.png');
-  // ctx.drawImage(enemy, canvas.width-200, canvas.height / 2, 150, 125);
   setTimeout(function () { taskType.style.display = "block"; }, 1500);
 }
 
@@ -267,14 +256,11 @@ function checkTaskAnswer() {
     currentresult = sorted.join('');
   }
 
-  // console.log('currentRes', currentresult);
-
   if (typeof result == "number") {
     currentresult = +currentresult;
   }
 
   if (taskChoice == "attack") {
-    console.log("attack");
     if (result === currentresult) {
       hpEnemy = changeHeath(hpEnemy);
       enemyHealth = getEnemyHealth(hpCount(hpEnemy));
@@ -282,7 +268,6 @@ function checkTaskAnswer() {
       if (hpEnemy <= 0) {
         killEnemy();
       }
-      console.log("true attack ", result, currentresult, 'hpEn', hpEnemy, 'hpUs', hpUser);
       return true;
     } else {
       hpUser = changeHeath(hpUser);
@@ -291,11 +276,9 @@ function checkTaskAnswer() {
       if (hpUser <= 0) {
         killUser();
       }
-      console.log("false attack ", result, currentresult, 'hpEn', hpEnemy, 'hpUs', hpUser);
       return false;
     }
   } else {
-    console.log("heal");
 
     if (result === currentresult) {
       hpUser = hpUser + 20;
@@ -305,7 +288,6 @@ function checkTaskAnswer() {
         hpUser = 100;
         heroHealth = getHeroHealth(hpCount(hpUser));
       }
-      console.log("true heal ", result, currentresult, 'hpEn', hpEnemy, 'hpUs', hpUser);
       return true;
     } else {
       hpUser = changeHeath(hpUser);
@@ -314,7 +296,6 @@ function checkTaskAnswer() {
       if (hpUser <= 0) {
         killUser();
       }
-      console.log("false heal", result, currentresult, 'hpEn', hpEnemy, 'hpUs', hpUser);
       return false;
     }
   }
@@ -367,21 +348,45 @@ function killEnemy() {
   hpEnemy = 100;
   enemyHealth = getEnemyHealth(hpCount(hpEnemy));
   round++;
-  console.log('round', round);
-  // getHeroHealth(0);
   defineEnemyName(randomInt(0, enemyName1.length - 1), randomInt(0, enemyName2.length - 1), randomInt(0, enemyName3.length - 1));
-  //enemy dies sprite + enemy born function(generate another enemy, generate another name)
 
 }
 
 function killUser() {
-  //user dies sprite
+  
+  var scores = JSON.parse(localStorage.getItem('results')) || [];
+  scores.push({
+    name: heroName,
+    rounds: round
+  });
+  localStorage.setItem('results', JSON.stringify(scores));
   showTablescore();
 }
 
 function showTablescore(){
+  let scoreTable = document.querySelector('#scoreTable');
+  let scoreDiv = scoreTable.parentElement;
+  
+  var scores = JSON.parse(localStorage.getItem('results')) || [];
+  var scoresRows = scores.reduce((result, item) => {
+    let newScore = document.createElement('tr');
+    newScore.innerHTML = '<td>' + item.name + '</td>' + '<td>' + item.rounds + '</td>';
+    result.push(newScore);
+    return result;
+  }, []);
 
+  scoresRows.forEach(element => {
+    scoreTable.appendChild(element)
+  });
+  let divCover = document.querySelector('.cover_form');
+  divCover.style.display = "block";
+  scoreDiv.style.display = 'flex'; 
 }
+
+let restart = document.querySelector("#restartGame");
+restart.addEventListener('click', function(){
+  location.reload();
+})
 
 function taskTranslate() {
   clearTaskDiv();

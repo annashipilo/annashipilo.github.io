@@ -1,5 +1,6 @@
 body{
     background-color: #131212;
+    margin: 0;
 }
 
 button{
@@ -49,19 +50,16 @@ canvas{
 }
 
 .task{
-    padding: 20px 50px;
+    padding: 90px 80px;
     background-color: #fff;
-    opacity: 0.9;
-    /* position: absolute;
-    top: calc(50% - 40px);
-    left: calc(50% - 300px); */
-    margin: auto;
+    position: absolute;
+    top: calc(50% - 100px);
+    left: calc(50% - 300px);
     width: 500px;
-    display: none;
     z-index: 3;
-    display: flex;
     justify-content: center;
     align-items: center;
+    display: none;
 }
 
 .names{
@@ -81,5 +79,80 @@ canvas{
     padding: 0.4em; 
     padding-left: 1.5em; 
     font-size: 1.4em; 
-    /* height: 18px;  */
+}
+
+.cover_form{
+    position: absolute;
+    width: 99%;
+    height: 99%;
+    background-color: #000;
+    opacity: 0.9;
+    z-index: 19;
+}
+
+form{
+    background-color: #007063;
+    position: absolute;
+    width: 500px;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    top: calc(50% - 100px);
+    left: calc(50% - 250px);
+    z-index: 20;
+}
+
+form button{
+    width: 173px;
+    margin-top: 5px;
+    background-color: #007063;
+    border: 1px solid #fff;
+    color: #fff;
+    padding: 5px 0;
+    outline: none;
+}
+
+.score{
+    margin: 0;
+    background-color: #007063;
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    top: calc(50% - 250px);
+    left: calc(50% - 250px);
+    z-index: 50;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    display: none;
+}
+
+.score table{
+    border-spacing: 0 0;
+}
+
+.score td{
+    width: 100px;
+    border: 1px solid black;
+    padding: 5px;
+    background: #fff;
+}
+
+.score button{
+    background: #ff9a00;
+    border: none;
+    width: 224px;
+    margin: 10px auto;
+    padding: 5px 0;
+    color: #fff;
+    transition: all 0.3s linear;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+
+.score button:hover{
+   color: #ff9a00;
+   background: #fff;
 }
