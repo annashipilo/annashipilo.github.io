@@ -1,0 +1,113 @@
+*{
+  padding: 0;
+  margin: 0;
+  font-family: "Lato-Light",sans-serif;
+}
+
+a{
+  text-decoration: none;
+  color: #fff;
+  transition: all 0.3s linear;
+}
+
+button{
+  cursor: pointer;
+}
+
+input{
+  outline: none;
+}
+
+nav {
+  background-color: #007063;
+  display: flex; 
+  justify-content: center;
+  padding: 25px 40px;
+}
+
+nav ul{
+  display: flex; 
+  justify-content: space-around;
+  width: 75%;
+}
+
+nav ul li{
+  cursor: pointer;
+  list-style: none;
+  color: #fff;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+nav ul li a:hover{
+  color: #ff9a00;
+}
+
+.dark_bg{
+  background-color: #003D36;
+  color: #fff;
+}
+
+.light_bg{
+  background-color: #fff;
+}
+
+.light_bg h2{
+  color: #007063;
+}
+section, .game_logo{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 0;
+}
+
+footer{
+  background-color: #000;
+  color: #fff;
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.play_btn{
+  margin-top: 50px;
+  background: none;
+  border: 1px solid #fff;
+  padding: 10px 50px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s linear;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 18px;
+}
+
+.play_btn:hover{
+  background: #ff9a00;
+}
+
+.about img{
+  margin: 30px 0;
+  width: 200px;
+  border-radius: 50%;
+}
+
+.icons_social{
+  margin: 10px 0;
+}
+
+.icons_social i{
+  font-size: 20px;
+  margin: 0 5px;
+  cursor: pointer;
+  transition: all 0.3s linear;
+  color: #007063;
+}
+
+.icons_social i:hover{
+  color: #ff9a00;
+}
+
