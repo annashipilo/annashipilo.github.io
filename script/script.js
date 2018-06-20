@@ -7,12 +7,3 @@
     });
 });
 
-let closeForm = document.querySelector('#cross');
-closeForm.addEventListener("click", function(){
-    let cover = document.querySelector('.formCover');
-    cover.classList.remove('formCover');
-
-    let form = document.querySelector('#userNameForm');
-    form.style.display = "none";
-});
-
