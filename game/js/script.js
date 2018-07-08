@@ -61,7 +61,6 @@ function setFocusOnTaskType(event) {
   // console.log(event);
 
   if (event.keyCode === RIGHT_KEYBOARD) {
-    console.log('sss');
     taskType.children[0].blur();
     taskType.children[1].focus();
     taskChoice = "attack";
@@ -478,7 +477,8 @@ function attackEnemy() {
   taskDiv.style.display = "flex";
   taskDiv.style.flexDirection = "column";
   // randomTask();
-  taskColours();
+  // taskColours();
+  taskComparison();
 }
 
 var btnHeal = document.querySelector('#heal');
@@ -490,7 +490,8 @@ function healUser() {
   taskDiv.style.display = "flex";
   taskDiv.style.flexDirection = "column";
   // randomTask();
-  taskColours();
+  // taskColours();
+  taskComparison();
 
 }
 
@@ -500,11 +501,10 @@ function changeHeath(hp) {
 }
 
 function randomTask() {
-  // let functionArr = [taskMath, taskTranslate, taskAudio, taskDragAndDrop, taskComparison, taskCountries];
+  // let functionArr = [taskMath, taskTranslate, taskAudio, taskDragAndDrop, taskComparison, taskCountries, taskColours];
   // let i = randomInt(0, functionArr.length - 1);
 
   // return functionArr[i]();
-  // return taskColours();
 }
 
 function killEnemy() {
@@ -561,6 +561,7 @@ restart.addEventListener('click', function () {
 });
 
 restart.parentElement.addEventListener('keydown', function (event) {
+  console.log(event);
   if (event.keyCode === ENTER) {
     location.reload();
   }
@@ -680,6 +681,9 @@ function taskComparison() {
   }
 
   taskMode = 'select';
+
+  let select = taskDiv.querySelector('select');
+  select.focus();
 }
 
 function taskCountries() {
