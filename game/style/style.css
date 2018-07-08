@@ -41,6 +41,14 @@ canvas{
     border: 3px solid #fff;
 }
 
+.task_type button:focus{
+    border: 3px solid #fff;
+}
+
+/* .task_type .btn_active{
+    border: 3px solid #fff;
+} */
+
 .btn_heal{
     background: url('../img/shield.png');    
 }
@@ -81,7 +89,7 @@ canvas{
     font-size: 1.4em; 
 }
 
-.cover_form{
+/* .cover_form{
     position: absolute;
     width: 99%;
     height: 99%;
@@ -112,6 +120,10 @@ form button{
     color: #fff;
     padding: 5px 0;
     outline: none;
+} */
+
+#startGameForm{
+    display:none;
 }
 
 .score{
@@ -155,4 +167,9 @@ form button{
 .score button:hover{
    color: #ff9a00;
    background: #fff;
+}
+
+.taskfigure{
+    width: 100px;
+    height: 100px;
 }

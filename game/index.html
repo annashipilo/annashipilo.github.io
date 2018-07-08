@@ -23,12 +23,15 @@
   <canvas id="canvas"></canvas>
 
   <div class="task_type" id="taskType">
-    <button class="btn_heal" id="heal" title="Heal"></button>
-    <button class="btn_attack" id="attack" title="Attack"></button>
+    <!-- <form> -->
+      <!-- <input type="text"> -->
+      <button class="btn_heal btn_active" id="heal" title="Heal"></button>
+      <button class="btn_attack" id="attack" title="Attack"></button>
+    <!-- </form> -->
   </div>
 
   <div class="task" id="task">
-    <button id ="checkMathBtn">ANSWER</button>
+    <button id="checkMathBtn">ANSWER</button>
   </div>
 
   <div class="score">
@@ -40,6 +43,9 @@
     </table>
     <button id="restartGame">Restart</button>
   </div>
+
+  <audio id="audioAttack" src="img/flame.ogg"></audio>
+  <audio id="audioHeal" src="img/magic.ogg"></audio>
 
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>

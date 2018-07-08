@@ -41,7 +41,6 @@ let enemyName3 = ["Лиза", "Даша", "Лара", "Вика", "Соня"];
 
 let heroName;
 
-
 var hpUser = 100;
 var hpEnemy = 100;
 
@@ -50,6 +49,45 @@ let taskMode;
 let taskText;
 
 let round = 1;
+
+const RIGHT_KEYBOARD = 39;
+const LEFT_KEYBOARD = 37;
+const ENTER = 13;
+
+
+function setFocusOnTaskType(event) {
+  // taskType.children[0].focus();
+  // console.log('111');
+  // console.log(event);
+
+  if (event.keyCode === RIGHT_KEYBOARD) {
+    console.log('sss');
+    taskType.children[0].blur();
+    taskType.children[1].focus();
+    taskChoice = "attack";
+  } else if (event.keyCode === LEFT_KEYBOARD) {
+    taskType.children[0].focus();
+    taskType.children[1].blur();
+    taskChoice = "heal";
+  }
+
+  // if (event.keyCode === RIGHT_KEYBOARD) {
+  //   taskType.children[0].classList.remove('btn_active');
+  //   taskType.children[1].classList.add('btn_active');
+  // } else if (event.keyCode === LEFT_KEYBOARD) {
+  //   taskType.children[0].classList.add('btn_active');
+  //   taskType.children[1].classList.remove('btn_active');
+  // }
+  // if (event.keyCode === ENTER && taskType.children[0].classList.contains('btn_active')) {
+  //   healUser();
+  // } else if(event.keyCode === ENTER && taskType.children[1].classList.contains('btn_active')){
+  //   attackEnemy();
+  // }
+}
+
+// function checkTaskEnter(event){
+  
+// }
 
 function randomInt(min, max) {
   var rand = min - 0.5 + Math.random() * (max - min + 1)
@@ -67,9 +105,10 @@ function defineEnemyName(i, j, k) {
 defineEnemyName(randomInt(0, enemyName1.length - 1), randomInt(0, enemyName2.length - 1), randomInt(0, enemyName3.length - 1));
 
 let game = document.querySelector('#startGameForm');
-game.addEventListener('submit', starGame);
+game.addEventListener('submit', startGame);
+game.addEventListener('keydown', startGameEnter);
 
-function starGame(e){
+function startGame(e) {
   e.preventDefault();
   let input = document.querySelector('#userNameInput');
   heroName = input.value;
@@ -78,18 +117,21 @@ function starGame(e){
   divCover.style.display = "none";
 }
 
+function startGameEnter(event) {
+  if (event.keyCode === ENTER) {
+    startGame(event);
+  }
+}
+
 var lastTime;
 function main() {
-  var now = Date.now();
-  var dt = (now - lastTime) / 1000.0;
+  // var now = Date.now();
+  // var dt = (now - lastTime) / 1000.0;
   render();
 
-  lastTime = now;
+  // lastTime = now;
   requestAnimationFrame(main);
 };
-
-resources.load(['img/back2.png', 'img/hero.png', "img/Gradient_Health_Bar.png", 'img/enemy_1.png', 'img/enemy_2.png', 'img/enemy_3.png', 'img/enemy_4.png', 'img/enemy_5.png', 'img/enemy_6.png']);
-resources.onReady(init);
 
 var ptrn;
 
@@ -121,7 +163,7 @@ function animateHero(i, j) {
   }
 }
 
-player = animateHero(0, 0);
+var player = animateHero(0, 0);
 var player_i = 0;
 var player_j = -100;
 
@@ -137,7 +179,6 @@ var runHero = setInterval(function () {
   }
 }, 100);
 
-
 function animateEnemy(i, j, x) {
   return {
     pos: [j, canvas.height / 2],
@@ -145,13 +186,11 @@ function animateEnemy(i, j, x) {
   }
 }
 
-
 var enemy_x = randomInt(1, 6);
 
 function enemyAppear(randEnemy) {
-  var enemy_j = canvas.width+50;
+  var enemy_j = canvas.width + 50;
   var enemy_i = 0;
-  enemy = animateEnemy(enemy_i, enemy_j, randEnemy);
   var runEnemy = setInterval(function () {
     enemy_i++;
     enemy_i = enemy_i % 4;
@@ -166,7 +205,81 @@ function enemyAppear(randEnemy) {
 }
 
 enemyAppear(enemy_x);
+taskTypeDisplay('block');
 
+
+function explosion(i, j) {
+  return {
+    pos: [j, player.pos[1] + 40],
+    sprite: new Sprite('img/explosion_sprite.png', [i * 64, 0], [64, 66])
+  }
+}
+
+var fire;
+
+function explosionAppear() {
+  var explosion_i = 0;
+  var explosion_j = player.pos[0] + 40;
+  fire = explosion(explosion_i, explosion_j);
+
+  var explosionStart = setInterval(function () {
+    explosion_i++;
+    explosion_i = explosion_i % 16;
+    explosion_j += 10;
+    fire = explosion(explosion_i, explosion_j);
+    audioAttack.play();
+    if (fire.pos[0] >= enemy.pos[0] - 20) {
+      clearInterval(explosionStart);
+      audioAttack.pause();
+      fire = null;
+    }
+  }, 25);
+}
+
+
+function explosionEnemyAppear() {
+  var explosion_i = 0;
+  var explosion_j = enemy.pos[0] - 40;
+  fire = explosion(explosion_i, explosion_j);
+
+  var explosionStart = setInterval(function () {
+    explosion_i++;
+    explosion_i = explosion_i % 16;
+    explosion_j -= 10;
+    fire = explosion(explosion_i, explosion_j);
+    audioAttack.play();
+    if (fire.pos[0] <= player.pos[0] + 50) {
+      clearInterval(explosionStart);
+      audioAttack.pause();
+      fire = null;
+    }
+  }, 25);
+}
+
+function magicSpell(i) {
+  return {
+    pos: [player.pos[0] + 45, player.pos[1] - 130],
+    sprite: new Sprite('img/magic.png', [i * 198, 0], [198, 158])
+  }
+}
+
+var magic;
+
+function magicAppear() {
+  var magic_i = 0;
+  magic = magicSpell(magic_i);
+
+  var magicStart = setInterval(function () {
+    magic_i++;
+    magic = magicSpell(magic_i);
+    audioHeal.play();
+    if (magic_i >= 7) {
+      clearInterval(magicStart);
+      audioHeal.pause();
+      magic = null;
+    }
+  }, 150);
+}
 
 function init() {
   ptrn = ctx.createPattern(resources.get('img/back2.png'), 'no-repeat');
@@ -178,7 +291,7 @@ function render() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.font = "25px Arial";
   ctx.fillStyle = 'red';
-  ctx.fillText(enemyName, canvas.width-300, 45);
+  ctx.fillText(enemyName, canvas.width - 300, 45);
   ctx.fillText('Round ' + round, canvas.width / 2 - 25, 50);
   ctx.fillText(heroName, 75, 45);
   ctx.fillStyle = ptrn;
@@ -187,8 +300,21 @@ function render() {
   renderEntity(enemy);
   renderEntity(heroHealth);
   renderEntity(enemyHealth);
+  if (fire) {
+    renderEntity(fire);
+  }
+  if (magic) {
+    renderEntity(magic);
+  }
+}
 
-  setTimeout(function () { taskType.style.display = "block"; }, 1500);
+function taskTypeDisplay(displayValue) {
+  if (displayValue == 'block') {
+    taskType.style.display = "block";
+    document.addEventListener("keydown", setFocusOnTaskType); //document
+  } else {
+    taskType.style.display = "none";
+  }
 }
 
 function renderEntity(entity) {
@@ -216,10 +342,7 @@ function taskMath() {
   taskText = "Enter result: "
 
   task.innerHTML = taskText + number1 + operators[i] + number2 + '=' + '<input type="text">';
-  setTimeout(function(){
-    let input = task.querySelector('input');
-    input.focus();
-  }, 100);
+  focusInput();
 
   switch (operators[i]) {
     case '+':
@@ -244,6 +367,15 @@ function taskMath() {
 
 let checkTask = document.querySelector('#checkMathBtn');
 checkTask.addEventListener('click', checkTaskAnswer);
+checkTask.parentElement.addEventListener('keydown', checkTaskAnswerEnter);
+
+
+function checkTaskAnswerEnter(event) {
+  if (event.keyCode === ENTER) {
+    checkTaskAnswer();
+  }
+}
+
 
 function checkTaskAnswer() {
   let currentresult;
@@ -266,68 +398,100 @@ function checkTaskAnswer() {
       enemyHealth = getEnemyHealth(hpCount(hpEnemy));
       closeTaskDiv();
       if (hpEnemy <= 0) {
-        killEnemy();
+        setTimeout(function () {
+          killEnemy();
+        }, 1700)
       }
+      explosionAppear();
+
+      setTimeout(function () {
+        taskTypeDisplay('block');
+      }, 2000);
       return true;
     } else {
       hpUser = changeHeath(hpUser);
       heroHealth = getHeroHealth(hpCount(hpUser));
       closeTaskDiv();
       if (hpUser <= 0) {
-        killUser();
+        setTimeout(function () {
+          killUser();
+        }, 1700);
       }
+      explosionEnemyAppear();
+
+      setTimeout(function () {
+        taskTypeDisplay('block');
+      }, 2000);
       return false;
     }
   } else {
-
     if (result === currentresult) {
       hpUser = hpUser + 20;
       heroHealth = getHeroHealth(hpCount(hpUser));
       closeTaskDiv();
-      if (hpUser >= 100) {
+      if (hpUser > 100) {
         hpUser = 100;
         heroHealth = getHeroHealth(hpCount(hpUser));
+      } else {
+        magicAppear();
       }
+
+      setTimeout(function () {
+        taskTypeDisplay('block');
+      }, 2000);
+
       return true;
     } else {
       hpUser = changeHeath(hpUser);
       heroHealth = getHeroHealth(hpCount(hpUser));
       closeTaskDiv();
       if (hpUser <= 0) {
-        killUser();
+        setTimeout(function () {
+          killEnemy();
+        }, 1700)
       }
+      explosionEnemyAppear();
+      setTimeout(function () {
+        taskTypeDisplay('block');
+      }, 2000);
       return false;
     }
   }
-};
+}
 
-function closeTaskDiv(){
-  setTimeout(function(){
+function closeTaskDiv() {
+  setTimeout(function () {
     taskDiv.style.display = 'none';
   }, 100);
 }
 
-function closeTaskTypeDiv(){
-  taskType.style.display = 'none';
-}
+var audioAttack = document.querySelector('#audioAttack');
+var audioHeal = document.querySelector('#audioHeal');
+
 
 var btnAttack = document.querySelector('#attack');
 btnAttack.addEventListener('click', attackEnemy);
 
 function attackEnemy() {
+  taskTypeDisplay('none');
   taskChoice = "attack";
   taskDiv.style.display = "flex";
   taskDiv.style.flexDirection = "column";
-  randomTask();
+  // randomTask();
+  taskColours();
 }
 
 var btnHeal = document.querySelector('#heal');
 btnHeal.addEventListener('click', healUser);
 
 function healUser() {
+  taskTypeDisplay('none');
   taskChoice = "heal";
-  taskDiv.style.display = "block";
-  randomTask();
+  taskDiv.style.display = "flex";
+  taskDiv.style.flexDirection = "column";
+  // randomTask();
+  taskColours();
+
 }
 
 function changeHeath(hp) {
@@ -336,10 +500,11 @@ function changeHeath(hp) {
 }
 
 function randomTask() {
-  let functionArr = [taskMath, taskTranslate, taskAudio, taskDragAndDrop, taskComparison, taskCountries];
-  let i = randomInt(0, functionArr.length - 1);
+  // let functionArr = [taskMath, taskTranslate, taskAudio, taskDragAndDrop, taskComparison, taskCountries];
+  // let i = randomInt(0, functionArr.length - 1);
 
-  return functionArr[i]();
+  // return functionArr[i]();
+  // return taskColours();
 }
 
 function killEnemy() {
@@ -349,24 +514,31 @@ function killEnemy() {
   enemyHealth = getEnemyHealth(hpCount(hpEnemy));
   round++;
   defineEnemyName(randomInt(0, enemyName1.length - 1), randomInt(0, enemyName2.length - 1), randomInt(0, enemyName3.length - 1));
-
 }
 
 function killUser() {
-  
+
   var scores = JSON.parse(localStorage.getItem('results')) || [];
   scores.push({
     name: heroName,
     rounds: round
   });
+  scores.sort(compareRounds);
+  if (scores.length > 10) {
+    scores.pop();
+  }
   localStorage.setItem('results', JSON.stringify(scores));
   showTablescore();
 }
 
-function showTablescore(){
+function compareRounds(scoresA, scoresB) {
+  return scoresB.rounds - scoresA.rounds;
+}
+
+function showTablescore() {
   let scoreTable = document.querySelector('#scoreTable');
   let scoreDiv = scoreTable.parentElement;
-  
+
   var scores = JSON.parse(localStorage.getItem('results')) || [];
   var scoresRows = scores.reduce((result, item) => {
     let newScore = document.createElement('tr');
@@ -380,12 +552,18 @@ function showTablescore(){
   });
   let divCover = document.querySelector('.cover_form');
   divCover.style.display = "block";
-  scoreDiv.style.display = 'flex'; 
+  scoreDiv.style.display = 'flex';
 }
 
 let restart = document.querySelector("#restartGame");
-restart.addEventListener('click', function(){
+restart.addEventListener('click', function () {
   location.reload();
+});
+
+restart.parentElement.addEventListener('keydown', function (event) {
+  if (event.keyCode === ENTER) {
+    location.reload();
+  }
 })
 
 function taskTranslate() {
@@ -393,36 +571,33 @@ function taskTranslate() {
   taskText = "Translate the word into russian: ";
   let i = randomInt(0, dictionary.length - 1);
   task.innerHTML = taskText + dictionary[i][0] + '<input type="text">';
-  setTimeout(function(){
-    let input = task.querySelector('input');
-    input.focus();
-  }, 100);
+  focusInput();
   result = dictionary[i][2];
 
   taskDiv.appendChild(task);
   taskMode = 'input';
 }
+let btnRepeat;
 
 function taskAudio() {
   clearTaskDiv();
   taskText = "Enter what do you hear: ";
-  let btnRepeat = document.createElement('button');
+  btnRepeat = document.createElement('button');
   btnRepeat.textContent = "REPEAT";
-  btnRepeat.addEventListener('click', function () {
-    speak(i)
-  });
-  task.appendChild(btnRepeat);
 
   task.innerHTML += taskText + '<input type="text">';
-  setTimeout(function(){
-    let input = task.querySelector('input');
-    input.focus();
-  }, 100);
+  focusInput();
   taskDiv.appendChild(task);
   let i = randomInt(0, dictionary.length - 1);
   result = speak(i);
 
   taskMode = 'input';
+
+  btnRepeat.addEventListener('click', function () {
+    speak(i);
+    focusInput();
+  });
+  task.appendChild(btnRepeat);
 }
 
 var synth = window.speechSynthesis;
@@ -512,10 +687,7 @@ function taskCountries() {
   taskText = "Enter the capital of the country: ";
   let i = randomInt(0, country.length - 1);
   task.innerHTML = taskText + country[i][0] + '<input type="text">';
-  setTimeout(function(){
-    let input = task.querySelector('input');
-    input.focus();
-  }, 100);
+  focusInput();
   taskDiv.appendChild(task);
 
   result = country[i][1];
@@ -525,3 +697,34 @@ function taskCountries() {
 function hpCount(n) {
   return (5 - (n / 20));
 }
+
+
+function taskColours() {
+  clearTaskDiv();
+  let coloursArr = ['black', 'yellow', 'green', 'pink', 'red', 'orange', 'brown', 'gray', 'violet', 'blue'];
+  let i = randomInt(0, coloursArr.length - 1);
+  let figure = document.createElement('div');
+
+  taskText = "Enter the colour of the figure: ";
+  figure.classList.add('taskfigure');
+  figure.style.backgroundColor = coloursArr[i];
+  result = figure.style.backgroundColor;
+
+  task.appendChild(figure);
+  task.innerHTML += taskText + '<input type="text">';
+
+  focusInput();
+
+  taskDiv.appendChild(task);
+  taskMode = 'input';
+}
+
+function focusInput() {
+  let input = task.querySelector('input');
+  setTimeout(function () {
+    input.focus();
+  }, 100);
+}
+
+resources.load(['img/back2.png', 'img/hero.png', "img/Gradient_Health_Bar.png", 'img/enemy_1.png', 'img/enemy_2.png', 'img/enemy_3.png', 'img/enemy_4.png', 'img/enemy_5.png', 'img/enemy_6.png', 'img/explosion_sprite.png', 'img/magic.png']);
+resources.onReady(init);
